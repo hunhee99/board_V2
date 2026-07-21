@@ -14,6 +14,9 @@ public class wiseSayingController {
             case "등록":
                 createNewWise(wiseRepo, sc);
                 break;
+            case "목록":
+                readWiseList(wiseRepo);
+                break;
         }
     }
 
@@ -26,6 +29,15 @@ public class wiseSayingController {
 
         int newId = WiseSayingService.tryToCreateWise(wiseRepo, content, author);
         System.out.println("%d번 명언이 등록되었습니다.".formatted(newId));
+    }
+
+    private static void readWiseList(WiseSayingRepository wiseRepo){
+        String output = WiseSayingService.getWiseList(wiseRepo);
+
+        System.out.print("""
+                번호 / 작가 / 명언
+                ----------------------""");
+        System.out.println(output);
     }
 
 
