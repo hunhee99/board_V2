@@ -9,20 +9,23 @@ import java.util.Scanner;
  */
 public class wiseSayingController {
 
-    public static void runCommand(Scanner sc, String cmd){
+    public static void runCommand(Scanner sc, WiseSayingRepository wiseRepo, String cmd){
         switch (cmd){
             case "등록":
-                createNewWise(sc);
+                createNewWise(wiseRepo, sc);
                 break;
         }
     }
 
-    private static void createNewWise(Scanner sc){
+    private static void createNewWise(WiseSayingRepository wiseRepo, Scanner sc){
         System.out.print("명언 : ");
         String content = sc.nextLine();
 
         System.out.print("작가 : ");
         String author = sc.nextLine();
+
+        int newId = WiseSayingService.tryToCreateWise(wiseRepo, content, author);
+        System.out.println("%d번 명언이 등록되었습니다.".formatted(newId));
     }
 
 

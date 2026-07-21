@@ -15,6 +15,7 @@ public class App {
 
 
     public void run(){
+        WiseSayingRepository wiseRepo = new WiseSayingRepository();
         System.out.println("== 명언 앱 ==");
 
         String cmd = "";
@@ -22,7 +23,9 @@ public class App {
         while(!cmd.equals("종료")){
             System.out.print("명령) ");
             cmd = sc.nextLine();
-            wiseSayingController.runCommand(sc, cmd);
+            wiseSayingController.runCommand(sc, wiseRepo, cmd);
         }
+
+        return;
     }
 }
