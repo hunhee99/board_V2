@@ -1,9 +1,5 @@
 package com.choi;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /*
 역할 : 순수 비지니스 로직
 스캐너 사용금지, 출력 금지
@@ -20,16 +16,26 @@ public class WiseSayingService {
         StringBuilder wiseList = new StringBuilder();
         for (int key : wiseRepo.getWiseSayingIds()) {
             wiseList.append("\n");
-            wiseList.append(wiseRepo.idToWiseSaying(key));
+            wiseList.append(String.join(" / ", getWise(wiseRepo, key)));
         }
-
         return wiseList.toString();
     }
 
+    // 단일 반환 [id, 작가, 명언]
+    public static String[] getWise(WiseSayingRepository wiseRepo, int requestId) {
+        return wiseRepo.idToWiseSaying(requestId);
+    }
+
+    // 기존 id의 명언 수정
+    public static void updateWiseInRepo(WiseSayingRepository wiseRepo, int requestUpdateId, String newContent, String newAuthor) {
+        wiseRepo.updateWise(wiseRepo, requestUpdateId, newContent, newAuthor);
+    }
+
     public static int deleteWiseIfExist(WiseSayingRepository wiseRepo, int requestDeleteId) {
-        if (wiseRepo.isExistKey(requestDeleteId)) {
-            return wiseRepo.deleteWise(requestDeleteId);
-        }
-        return -1;
+        return wiseRepo.deleteWise(requestDeleteId);
+    }
+
+    public static boolean isExistKey(WiseSayingRepository wiseRepo, int requestId) {
+        return wiseRepo.isWiseSayingExist(requestId);
     }
 }

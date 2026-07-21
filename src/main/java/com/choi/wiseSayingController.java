@@ -29,6 +29,10 @@ public class wiseSayingController {
                 int deleteId = Integer.parseInt(params.get("id"));
                 deleteWise(wiseRepo, deleteId);
                 break;
+            case "수정":
+                int updateId = Integer.parseInt(params.get("id"));
+                updateId(wiseRepo, sc, updateId);
+                break;
         }
     }
 
@@ -56,11 +60,35 @@ public class wiseSayingController {
 
     // 삭제
     private static void deleteWise(WiseSayingRepository wiseRepo, int requestDeleteId){
+        if (!WiseSayingService.isExistKey(wiseRepo, requestDeleteId)) {
+            System.out.println("%d번 명언은 존재하지 않습니다.".formatted(requestDeleteId));
+            return;
+        }
+
         int deletedId = WiseSayingService.deleteWiseIfExist(wiseRepo, requestDeleteId);
-        String response = deletedId == requestDeleteId ? "%d번 명언이 삭제되었습니다.".formatted(requestDeleteId) : "%d번 명언은 존재하지 않습니다.".formatted(requestDeleteId);
-        System.out.println(response);
+        System.out.println("%d번 명언이 삭제되었습니다.".formatted(deletedId));
     }
 
+    // 수정
+    private static void updateId(WiseSayingRepository wiseRepo, Scanner sc, int requestUpdateId) {
+        if (!WiseSayingService.isExistKey(wiseRepo, requestUpdateId)) {
+            System.out.println("%d번 명언은 존재하지 않습니다.".formatted(requestUpdateId));
+            return;
+        }
+        String[] origin = WiseSayingService.getWise(wiseRepo, requestUpdateId);
+        String newContent;
+        String newAuthor;
+
+        System.out.println("명언(기존) : %s".formatted(origin[2]));
+        System.out.print("명언 : ");
+        newContent = sc.nextLine();
+
+        System.out.println("작가(기존) : %s".formatted(origin[1]));
+        System.out.print("작가 : ");
+        newAuthor = sc.nextLine();
+
+        WiseSayingService.updateWiseInRepo(wiseRepo, requestUpdateId, newContent, newAuthor);
+    }
 
 
     // 파라미터 파싱

@@ -26,21 +26,27 @@ public class WiseSayingRepository {
     }
 
     // 명언 반환
-    // "id / 작가 / 명언" 형식으로 반환
-    public String idToWiseSaying(int wiseSayingId) {
-        int id = wiseSayingMap.get(wiseSayingId).getId();
+    // [id, 작가, 명언] 형식으로 반환
+    public String[] idToWiseSaying(int wiseSayingId) {
+        String id = String.valueOf(wiseSayingMap.get(wiseSayingId).getId());
         String content = wiseSayingMap.get(wiseSayingId).getContent();
         String author = wiseSayingMap.get(wiseSayingId).getAuthor();
-        return "%d / %s / %s".formatted(id, author, content);
+        return new String[]{id, author, content};
     }
 
     // id에 맞는 명언이 존재하는지 반환
-    public boolean isExistKey(int key){
+    public boolean isWiseSayingExist(int key){
         return wiseSayingMap.containsKey(key);
     }
 
     // id에 해당하는 명언 삭제 -> 삭제한 명언의 id 반환
     public int deleteWise(int requestDeleteId) {
         return wiseSayingMap.remove(requestDeleteId).getId();
+    }
+
+    // 특정 id의 명언 수정
+    public void updateWise(WiseSayingRepository wiseRepo, int requestUpdateId, String newContent, String newAuthor) {
+        wiseSayingMap.get(requestUpdateId).setContent(newContent);
+        wiseSayingMap.get(requestUpdateId).setAuthor(newAuthor);
     }
 }
