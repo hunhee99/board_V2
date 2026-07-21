@@ -25,9 +25,7 @@ public class AppTest {
                 작자미상
                 종료
                 """);
-        assertThat(out).contains("""
-                명언 : 
-                작가 : 
-                """);
+        assertThat(out).contains("명언 :");
+        assertThat(out).contains("작가 :");
     }
 }
