@@ -1,5 +1,6 @@
 package com.choi;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 /*
@@ -9,7 +10,14 @@ import java.util.Scanner;
  */
 public class wiseSayingController {
 
-    public static void runCommand(Scanner sc, WiseSayingRepository wiseRepo, String cmd){
+    public static void runCommand(Scanner sc, WiseSayingRepository wiseRepo, String query){
+        String[] command = query.split("\\?");
+        String cmd = command[0];
+        HashMap<String, String> params = new HashMap<>();
+        if (command.length == 2) {
+            params = parseParams(command[1]);
+        }
+
         switch (cmd){
             case "등록":
                 createNewWise(wiseRepo, sc);
@@ -17,9 +25,14 @@ public class wiseSayingController {
             case "목록":
                 readWiseList(wiseRepo);
                 break;
+            case "삭제":
+                int deleteId = Integer.parseInt(params.get("id"));
+                deleteWise(wiseRepo, deleteId);
+                break;
         }
     }
 
+    // 등록
     private static void createNewWise(WiseSayingRepository wiseRepo, Scanner sc){
         System.out.print("명언 : ");
         String content = sc.nextLine();
@@ -31,6 +44,7 @@ public class wiseSayingController {
         System.out.println("%d번 명언이 등록되었습니다.".formatted(newId));
     }
 
+    // 목록
     private static void readWiseList(WiseSayingRepository wiseRepo){
         String output = WiseSayingService.getWiseList(wiseRepo);
 
@@ -40,5 +54,25 @@ public class wiseSayingController {
         System.out.println(output);
     }
 
+    // 삭제
+    private static void deleteWise(WiseSayingRepository wiseRepo, int requestDeleteId){
+        int deletedId = WiseSayingService.deleteWiseIfExist(wiseRepo, requestDeleteId);
+        String response = deletedId == requestDeleteId ? "%d번 명언이 삭제되었습니다.".formatted(requestDeleteId) : "%d번 명언은 존재하지 않습니다.".formatted(requestDeleteId);
+        System.out.println(response);
+    }
 
+
+
+    // 파라미터 파싱
+    private static HashMap<String, String> parseParams(String rawParams){
+        String[] params = rawParams.split("&amp;");
+        HashMap<String, String> parsedParams = new HashMap<>();
+
+        for (String param : params) {
+            String[] keyValue = param.split("=");
+            parsedParams.put(keyValue[0], keyValue[1]);
+        }
+
+        return parsedParams;
+    }
 }

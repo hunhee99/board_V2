@@ -25,4 +25,11 @@ public class WiseSayingService {
 
         return wiseList.toString();
     }
+
+    public static int deleteWiseIfExist(WiseSayingRepository wiseRepo, int requestDeleteId) {
+        if (wiseRepo.isExistKey(requestDeleteId)) {
+            return wiseRepo.deleteWise(requestDeleteId);
+        }
+        return -1;
+    }
 }

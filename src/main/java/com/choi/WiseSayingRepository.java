@@ -34,5 +34,13 @@ public class WiseSayingRepository {
         return "%d / %s / %s".formatted(id, author, content);
     }
 
+    // id에 맞는 명언이 존재하는지 반환
+    public boolean isExistKey(int key){
+        return wiseSayingMap.containsKey(key);
+    }
 
+    // id에 해당하는 명언 삭제 -> 삭제한 명언의 id 반환
+    public int deleteWise(int requestDeleteId) {
+        return wiseSayingMap.remove(requestDeleteId).getId();
+    }
 }
