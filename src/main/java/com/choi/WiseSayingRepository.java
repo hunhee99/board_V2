@@ -26,12 +26,8 @@ public class WiseSayingRepository {
     }
 
     // 명언 반환
-    // [id, 작가, 명언] 형식으로 반환
-    public String[] idToWiseSaying(int wiseSayingId) {
-        String id = String.valueOf(wiseSayingMap.get(wiseSayingId).getId());
-        String content = wiseSayingMap.get(wiseSayingId).getContent();
-        String author = wiseSayingMap.get(wiseSayingId).getAuthor();
-        return new String[]{id, author, content};
+    public WiseSaying findWiseSayingById(int wiseSayingId) {
+        return wiseSayingMap.get(wiseSayingId);
     }
 
     // id에 맞는 명언이 존재하는지 반환

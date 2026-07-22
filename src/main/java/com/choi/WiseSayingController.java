@@ -35,17 +35,23 @@ public class WiseSayingController {
                 readAllReqToService();
                 break;
             case "삭제":
-                int deleteId = Integer.parseInt(params.get("id"));
-                deleteReqToSerivce(deleteId);
+                Integer deleteId = parseId(params.get("id"));
+                if (deleteId == null){
+                    break;
+                }
+                deleteReqToService(deleteId);
                 break;
             case "수정":
-                int updateId = Integer.parseInt(params.get("id"));
+                Integer updateId = parseId(params.get("id"));
+                if (updateId == null){
+                    break;
+                }
                 updateReqToService(updateId);
                 break;
         }
     }
 
-    // 등록
+    // 등록 요청
     private void createNewReqToService(){
         System.out.print("명언 : ");
         String content = sc.nextLine();
@@ -57,43 +63,40 @@ public class WiseSayingController {
         System.out.println("%d번 명언이 등록되었습니다.".formatted(newId));
     }
 
-    // 목록
+    // 목록 요청
     private void readAllReqToService(){
-        String output = wiseSayingService.getWiseRepo();
-        System.out.print("""
-                번호 / 작가 / 명언
-                ----------------------""");
-        System.out.println(output);
+        System.out.println("번호 / 작가 / 명언");
+        System.out.println("----------------------");
+        for (WiseSaying w : wiseSayingService.getWiseListInRepo()){
+            System.out.println("%d / %s / %s".formatted(w.getId(), w.getAuthor(), w.getContent()));
+        }
     }
 
-    // 삭제
-    private void deleteReqToSerivce(int requestDeleteId){
-        if (!wiseSayingService.isKeyInRepo(requestDeleteId)) {
+    // 삭제 요청
+    private void deleteReqToService(int requestDeleteId){
+        int deletedId = wiseSayingService.deleteWiseInRepo(requestDeleteId);
+        if (deletedId == -1){
             System.out.println("%d번 명언은 존재하지 않습니다.".formatted(requestDeleteId));
             return;
         }
-
-        int deletedId = wiseSayingService.deleteWiseInRepo(requestDeleteId);
         System.out.println("%d번 명언이 삭제되었습니다.".formatted(deletedId));
     }
 
-    // 수정
+    // 수정 요청
     private void updateReqToService(int requestUpdateId) {
-        if (!wiseSayingService.isKeyInRepo(requestUpdateId)) {
+        WiseSaying origin = wiseSayingService.getWiseInRepo(requestUpdateId);
+        if (origin == null) {
             System.out.println("%d번 명언은 존재하지 않습니다.".formatted(requestUpdateId));
             return;
         }
-        String[] origin = wiseSayingService.getWiseInRepo(requestUpdateId);
-        String newContent;
-        String newAuthor;
 
-        System.out.println("명언(기존) : %s".formatted(origin[2]));
+        System.out.println("명언(기존) : %s".formatted(origin.getContent()));
         System.out.print("명언 : ");
-        newContent = sc.nextLine();
+        String newContent = sc.nextLine();
 
-        System.out.println("작가(기존) : %s".formatted(origin[1]));
+        System.out.println("작가(기존) : %s".formatted(origin.getAuthor()));
         System.out.print("작가 : ");
-        newAuthor = sc.nextLine();
+        String newAuthor = sc.nextLine();
 
         wiseSayingService.updateWiseInRepo(requestUpdateId, newContent, newAuthor);
     }
@@ -101,7 +104,7 @@ public class WiseSayingController {
 
     // 파라미터 파싱
     private HashMap<String, String> parseParams(String rawParams){
-        String[] params = rawParams.split("&amp;");
+        String[] params = rawParams.split("&");
         HashMap<String, String> parsedParams = new HashMap<>();
 
         for (String param : params) {
@@ -110,5 +113,16 @@ public class WiseSayingController {
         }
 
         return parsedParams;
+    }
+
+    // id 파싱
+    private Integer parseId(String rawId){
+        if (rawId == null){ return null; }
+        try {
+            return Integer.parseInt(rawId);
+        }
+        catch (NumberFormatException e){
+            return null;
+        }
     }
 }

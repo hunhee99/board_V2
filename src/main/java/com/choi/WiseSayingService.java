@@ -1,5 +1,9 @@
 package com.choi;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 /*
 역할 : 순수 비지니스 로직
 스캐너 사용금지, 출력 금지
@@ -18,18 +22,17 @@ public class WiseSayingService {
     }
 
     // 모든 명언 반환 (id값 기준 내림차순)
-    public String getWiseRepo() {
-        StringBuilder wiseList = new StringBuilder();
+    public List<WiseSaying> getWiseListInRepo() {
+        List<WiseSaying> list = new ArrayList<>();
         for (int key : wiseRepo.getWiseSayingIds()) {
-            wiseList.append("\n");
-            wiseList.append(String.join(" / ", getWiseInRepo(key)));
+            list.add(wiseRepo.findWiseSayingById(key));
         }
-        return wiseList.toString();
+        return list;
     }
 
     // 단일 반환 [id, 작가, 명언]
-    public String[] getWiseInRepo(int requestId) {
-        return wiseRepo.idToWiseSaying(requestId);
+    public WiseSaying getWiseInRepo(int requestId) {
+        return wiseRepo.findWiseSayingById(requestId);
     }
 
     // 기존 id의 명언 수정
@@ -37,11 +40,12 @@ public class WiseSayingService {
         wiseRepo.updateWiseSaying(requestUpdateId, newContent, newAuthor);
     }
 
+    // [삭제]
     public int deleteWiseInRepo(int requestDeleteId) {
+        if (!wiseRepo.isWiseSayingExist(requestDeleteId)) {
+            return -1;
+        }
         return wiseRepo.deleteWiseSaying(requestDeleteId);
     }
 
-    public boolean isKeyInRepo(int requestId) {
-        return wiseRepo.isWiseSayingExist(requestId);
-    }
 }

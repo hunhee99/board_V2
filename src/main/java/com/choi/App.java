@@ -30,6 +30,6 @@ public class App {
             wiseSayingController.runCommand(cmd);
         }
 
-        return;
+        sc.close();
     }
 }
