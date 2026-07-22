@@ -40,13 +40,14 @@ public class WiseSayingRepository {
     }
 
     // id에 해당하는 명언 삭제 -> 삭제한 명언의 id 반환
-    public int deleteWise(int requestDeleteId) {
+    public int deleteWiseSaying(int requestDeleteId) {
         return wiseSayingMap.remove(requestDeleteId).getId();
     }
 
     // 특정 id의 명언 수정
-    public void updateWise(WiseSayingRepository wiseRepo, int requestUpdateId, String newContent, String newAuthor) {
-        wiseSayingMap.get(requestUpdateId).setContent(newContent);
-        wiseSayingMap.get(requestUpdateId).setAuthor(newAuthor);
+    public void updateWiseSaying(int requestUpdateId, String newContent, String newAuthor) {
+        WiseSaying target = wiseSayingMap.get(requestUpdateId);
+        target.setContent(newContent);
+        target.setAuthor(newAuthor);
     }
 }

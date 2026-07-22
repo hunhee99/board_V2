@@ -8,9 +8,13 @@ import java.util.Scanner;
  */
 public class App {
     private Scanner sc;
+    private final WiseSayingController wiseSayingController;
 
     public App(Scanner sc) {
         this.sc = sc;
+        WiseSayingRepository wiseRepo = new WiseSayingRepository();
+        WiseSayingService wiseSayingService = new WiseSayingService(wiseRepo);
+        this.wiseSayingController = new WiseSayingController(sc, wiseSayingService);
     }
 
 
@@ -23,7 +27,7 @@ public class App {
         while(!cmd.equals("종료")){
             System.out.print("명령) ");
             cmd = sc.nextLine();
-            wiseSayingController.runCommand(sc, wiseRepo, cmd);
+            wiseSayingController.runCommand(cmd);
         }
 
         return;
