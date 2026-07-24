@@ -300,5 +300,28 @@ public class AppTest {
                 .contains("페이지 : [1] / 2");
 
 
+    }@Test
+    @DisplayName("목록?page=6, 페이지 메뉴 출력")
+    void t16() {
+
+        String input = IntStream.rangeClosed(1, 29)
+                .mapToObj(num -> """
+                        등록
+                        명언 %d
+                        작가 %d
+                        """.formatted(num, num))
+                .collect(Collectors.joining("\n"));
+
+        input += "목록?page=6\n종료\n";
+
+        String out = AppTestRunner.run(input);
+
+        assertThat(out)
+                .doesNotContain("5 / 작가 5 / 명언 5")
+                .contains("4 / 작가 4 / 명언 4")
+                .contains("3 / 작가 3 / 명언 3")
+                .contains("2 / 작가 2 / 명언 2")
+                .contains("1 / 작가 1 / 명언 1")
+                .contains("페이지 : 1 / 2 / 3 / 4 / 5 / [6]");
     }
 }

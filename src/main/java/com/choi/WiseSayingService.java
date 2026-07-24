@@ -26,7 +26,7 @@ public class WiseSayingService {
         int pageSize = 5;
         List<WiseSaying> filtered = new ArrayList<>();
         for (int id: wiseRepo.getWiseSayingIds()){
-            WiseSaying wise = wiseRepo.findWiseSayingById(id);
+            WiseSaying wise = getWiseInRepo(id);
             if(isMatch(wise, keywordType, keyword)){
                 filtered.add(wise);
             }
