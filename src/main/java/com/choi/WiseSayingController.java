@@ -1,7 +1,10 @@
 package com.choi;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static javax.swing.UIManager.put;
 
@@ -24,12 +27,13 @@ public class WiseSayingController {
         String[] command = query.split("\\?");
         String cmd = command[0];
         HashMap<String, String> params = new HashMap<>() {{
-            put("keywordType", "default");
-            put("keyword", "default");
+            put("keywordType", "");
+            put("keyword", "");
+            put("page", "1");
         }};
 
         if (command.length == 2) {
-            params = parseParams(command[1]);
+            params.putAll(parseParams(command[1]));
         }
 
         switch (cmd){
@@ -39,8 +43,9 @@ public class WiseSayingController {
             case "목록":
                 String keywordType = params.get("keywordType");
                 String keyword = params.get("keyword");
+                Integer page = parseId(params.get("page"));
 
-                readAllReqToService(keywordType, keyword);
+                readAllReqToService(keywordType, keyword, page);
                 break;
             case "삭제":
                 Integer deleteId = parseId(params.get("id"));
@@ -72,12 +77,22 @@ public class WiseSayingController {
     }
 
     // 목록 요청
-    private void readAllReqToService(String keywordType, String keyword){
+    private void readAllReqToService(String keywordType, String keyword, int page){
+        PageDto pageDto = wiseSayingService.getWiseListInRepo(keywordType, keyword, page);
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
-        for (WiseSaying w : wiseSayingService.getWiseListInRepo(keywordType, keyword)) {
-            System.out.println("%d / %s / %s".formatted(w.getId(), w.getAuthor(), w.getContent()));
+
+        for (WiseSaying wiseSaying : pageDto.getContent()) {
+            System.out.println("%d / %s / %s".formatted(wiseSaying.getId(), wiseSaying.getAuthor(), wiseSaying.getContent()));
         }
+        printPageMenu(pageDto);
+    }
+    private void printPageMenu(PageDto pageDto) {
+        String menu = IntStream.rangeClosed(1, pageDto.getTotalPages())
+                .mapToObj(i -> i == pageDto.getPage() ? "[%d]".formatted(i) : String.valueOf(i))
+                .collect(Collectors.joining(" / "));
+
+        System.out.println("페이지 : " + menu);
     }
 
     // 삭제 요청

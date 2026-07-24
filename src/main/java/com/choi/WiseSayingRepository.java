@@ -18,10 +18,10 @@ public class WiseSayingRepository {
         return newId;
     }
 
-    // 전체 키 값 내림차순 반환 (TreeSet으로 내림차순 정렬 후 반환)
-    public Set<Integer>  getWiseSayingIds() {
-        Set<Integer> wiseSayingIds = new TreeSet<>(Comparator.reverseOrder());
-        wiseSayingIds.addAll(wiseSayingMap.keySet());
+    // 전체 키 값 내림차순 반환
+    public List<Integer>  getWiseSayingIds() {
+        List<Integer> wiseSayingIds = new ArrayList<>(wiseSayingMap.keySet());
+        wiseSayingIds.sort(Comparator.reverseOrder());
         return wiseSayingIds;
     }
 

@@ -21,29 +21,42 @@ public class WiseSayingService {
             return wiseRepo.createWiseSaying(content, author);
     }
 
-    // 검색어가 포함된 명언들 반환
-    public List<WiseSaying> getWiseListInRepo(String keywordType, String keyword) {
-        List<WiseSaying> list = new ArrayList<>();
-
-
-        for (int key : wiseRepo.getWiseSayingIds()) {
-            WiseSaying wise = wiseRepo.findWiseSayingById(key);
-            if (keywordType.equals("content")) {
-                if (wise.getContent().contains(keyword)) {
-                    list.add(wise);
-                }
-            }
-            else if (keywordType.equals("author")) {
-                if (wise.getAuthor().contains(keyword)) {
-                    list.add(wise);
-                }
-            }
-            else {
-                list.add(wise);
+    // 검색어가 포함된 명언들 반환 (검색 파라미터가 없을 시 필터링 없음)
+    public PageDto getWiseListInRepo(String keywordType, String keyword, int page) {
+        int pageSize = 5;
+        List<WiseSaying> filtered = new ArrayList<>();
+        for (int id: wiseRepo.getWiseSayingIds()){
+            WiseSaying wise = wiseRepo.findWiseSayingById(id);
+            if(isMatch(wise, keywordType, keyword)){
+                filtered.add(wise);
             }
         }
-        return list;
+
+        int totalItems = filtered.size();
+        int start = (page - 1) * pageSize;
+        List<WiseSaying> content = new ArrayList<>();
+
+        if (start < totalItems){
+            int end = Math.min(start + pageSize, totalItems);
+            content = new ArrayList<>(filtered.subList(start, end));
+        }
+
+        return new PageDto(page, pageSize, totalItems, content);
     }
+
+    private boolean isMatch(WiseSaying wise, String keywordType, String keyword){
+        if (keyword == null || keyword.isBlank()){
+            return true;
+        }
+        if ("content".equals(keywordType)){
+            return wise.getContent().contains(keyword);
+        }
+        if ("author".equals(keywordType)){
+            return wise.getAuthor().contains(keyword);
+        }
+        return true;
+    }
+
 
     // 단일 반환 [id, 작가, 명언]
     public WiseSaying getWiseInRepo(int requestId) {
