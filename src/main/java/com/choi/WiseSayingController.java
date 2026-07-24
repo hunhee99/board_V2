@@ -84,7 +84,9 @@ public class WiseSayingController {
 
     // 수정 요청
     private void updateReqToService(int requestUpdateId) {
+        // 존재하는지 확인
         WiseSaying origin = wiseSayingService.getWiseInRepo(requestUpdateId);
+
         if (origin == null) {
             System.out.println("%d번 명언은 존재하지 않습니다.".formatted(requestUpdateId));
             return;
