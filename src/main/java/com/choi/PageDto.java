@@ -14,10 +14,6 @@ public class PageDto {
     private int totalItems;
     private List<WiseSaying> content;
 
-
-
-
-
     public int getTotalPages(){
         if (totalItems == 0){ return 1; }
         return (totalItems + pageSize - 1) / pageSize;
