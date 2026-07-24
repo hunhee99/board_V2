@@ -3,6 +3,8 @@ package com.choi;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import static javax.swing.UIManager.put;
+
 /*
 역할 : 고객의 명령을 입력받고 적절을 응답을 표현
 이 단계에서는 스캐너 사용가능
@@ -21,7 +23,10 @@ public class WiseSayingController {
     public void runCommand(String query){
         String[] command = query.split("\\?");
         String cmd = command[0];
-        HashMap<String, String> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<>() {{
+            put("keywordType", "default");
+            put("keyword", "default");
+        }};
 
         if (command.length == 2) {
             params = parseParams(command[1]);
@@ -32,7 +37,10 @@ public class WiseSayingController {
                 createNewReqToService();
                 break;
             case "목록":
-                readAllReqToService();
+                String keywordType = params.get("keywordType");
+                String keyword = params.get("keyword");
+
+                readAllReqToService(keywordType, keyword);
                 break;
             case "삭제":
                 Integer deleteId = parseId(params.get("id"));
@@ -64,10 +72,10 @@ public class WiseSayingController {
     }
 
     // 목록 요청
-    private void readAllReqToService(){
+    private void readAllReqToService(String keywordType, String keyword){
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
-        for (WiseSaying w : wiseSayingService.getWiseListInRepo()){
+        for (WiseSaying w : wiseSayingService.getWiseListInRepo(keywordType, keyword)) {
             System.out.println("%d / %s / %s".formatted(w.getId(), w.getAuthor(), w.getContent()));
         }
     }

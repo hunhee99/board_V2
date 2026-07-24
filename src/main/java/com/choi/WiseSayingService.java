@@ -21,11 +21,26 @@ public class WiseSayingService {
             return wiseRepo.createWiseSaying(content, author);
     }
 
-    // 모든 명언 반환 (id값 기준 내림차순)
-    public List<WiseSaying> getWiseListInRepo() {
+    // 검색어가 포함된 명언들 반환
+    public List<WiseSaying> getWiseListInRepo(String keywordType, String keyword) {
         List<WiseSaying> list = new ArrayList<>();
+
+
         for (int key : wiseRepo.getWiseSayingIds()) {
-            list.add(wiseRepo.findWiseSayingById(key));
+            WiseSaying wise = wiseRepo.findWiseSayingById(key);
+            if (keywordType.equals("content")) {
+                if (wise.getContent().contains(keyword)) {
+                    list.add(wise);
+                }
+            }
+            else if (keywordType.equals("author")) {
+                if (wise.getAuthor().contains(keyword)) {
+                    list.add(wise);
+                }
+            }
+            else {
+                list.add(wise);
+            }
         }
         return list;
     }

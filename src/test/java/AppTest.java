@@ -171,6 +171,7 @@ public class AppTest {
                 과거에 집착하지 마라.
                 작자미상
                 목록?keywordType=content&keyword=과거
+                종료
                 """);
 
         assertThat(out)
