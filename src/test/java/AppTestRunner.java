@@ -10,6 +10,8 @@ public class AppTestRunner {
         ByteArrayOutputStream outputStream = TestUtil.setOutToByteArray();
         new App(sc).run();
 
+       TestUtil.clearSetOutToByteArray(outputStream);
+
         return outputStream.toString();
     }
 

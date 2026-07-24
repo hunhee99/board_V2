@@ -1,10 +1,9 @@
 package com.choi.util;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Map;
 
 public class Util {
 
@@ -51,9 +50,84 @@ public class Util {
         public static boolean exists(String filePath) {
             return Files.exists(getPath(filePath));
         }
+
+        public static boolean rmdir(String dirPath) {
+            return delete(dirPath);
+        }
+
+        public static void  mkdir(String dirPath) {
+            try {
+                Files.createDirectories(getPath(dirPath));
+            } catch (IOException e) {
+                throw new RuntimeException("디렉토리 생성 실패: " + dirPath, e);
+            }
+        }
+
+
+
+        private static class FileDeleteVisitor extends SimpleFileVisitor<Path> {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        }
+
+
+        public static boolean delete(String filePath) {
+            try {
+                Files.walkFileTree(getPath(filePath), new FileDeleteVisitor());
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
+        }
+
+        public static String get(String filePath, String defaultValue) {
+            try {
+                return Files.readString(getPath(filePath));
+            } catch (IOException e) {
+                return defaultValue;
+            }
+        }
     }
 
+
+
     public static class json {
+        public static String toString(Map<String, Object> map) {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("{");
+            sb.append("\n");
+
+            map.forEach((key, value) -> {
+                sb.append("    ");
+                key = "\"" + key + "\"";
+
+                if (value instanceof String) {
+                    value = "\"" + value + "\"";
+                }
+
+                sb.append("%s: %s,\n".formatted(key, value));
+            });
+
+            if (!map.isEmpty()) {
+                sb.delete(sb.length() - 2, sb.length());
+            }
+
+            sb.append("\n");
+            sb.append("}");
+
+            return sb.toString();
+        }
+
 
     }
 
