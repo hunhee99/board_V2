@@ -1,5 +1,6 @@
+package util;
 
-
+import com.choi.util.Util;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
